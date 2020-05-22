@@ -2,24 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+using TigerForge;
 
 public class Player : MonoBehaviour
 {
-
+    EasyFileSave easyFileSave;
     bool gameOver = false;
     private Rigidbody2D rb;
-
-    public GameObject Canvas;
+    private int points;
+    //private TextMeshProUGUI
+    public GameObject Canvas, deadSms,pointsText;
     public Canvas NewCan;
+    
     // Start is called before the first frame update
     void Start()
     {
+        
+        easyFileSave = new EasyFileSave();
+        
+        
         rb = GetComponent<Rigidbody2D>();
         SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer>();
 
         Canvas = GameObject.Find("Canvas");
         NewCan = Canvas.GetComponent<Canvas>();
-        NewCan.enabled = false;
+        //NewCan.enabled = false;
+        deadSms.SetActive(false);
+        pointsText = GameObject.Find("PointsText");
     }
     // Update is called once per frame
 
@@ -29,10 +39,16 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             if (Camera.main.GetComponent<CameraFollow>().paused == true)
-                SceneManager.LoadScene("SampleScene");
-
+            {
+                SaveGame();
+                SceneManager.LoadScene("Menu");
+            }
 
         }
+    }
+    private void FixedUpdate()
+    {
+        pointsText.GetComponent<TextMeshProUGUI>().text = points.ToString();
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -44,15 +60,24 @@ public class Player : MonoBehaviour
             SoundManager.PlaySound("death");
             Camera.main.GetComponent<CameraFollow>().paused = true;
             this.GetComponent<Grapple>().enabled = false;
-            NewCan.enabled = true;
-
+            //NewCan.enabled = true;
+            deadSms.SetActive(true);
         }
 
 
     }
     void OnTriggerEnter2D(Collider2D col)
     {
+        //Debug.Log(points);
+        points += 1;
         Destroy(col.gameObject);
         SoundManager.PlaySound("coin");
     }
+
+    private void SaveGame()
+    {
+        easyFileSave.Add("points", points);
+        easyFileSave.Save();
+    }
+    
 }
