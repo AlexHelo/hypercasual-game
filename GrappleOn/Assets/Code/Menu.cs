@@ -7,13 +7,13 @@ using TMPro;
 public class Menu : MonoBehaviour
 {
     [SerializeField]
-    private GameObject mainMenu, storeUI,storeMoney;
+    private GameObject mainMenu, storeUI, storeMoney;
     private EasyFileSave SaveGame;
     private int points;
     private void Start()
     {
-        SaveGame= new EasyFileSave();
-        
+        SaveGame = new EasyFileSave();
+        storeUI.SetActive(false);
     }
     public void PlayGame()
     {
@@ -27,14 +27,14 @@ public class Menu : MonoBehaviour
     {
         storeUI.SetActive(true);
         mainMenu.SetActive(false);
-        
+
 
     }
     public void CloseStore()
     {
         storeUI.SetActive(false);
         mainMenu.SetActive(true);
-        
+
     }
     private void SetMoney()
     {
@@ -47,7 +47,7 @@ public class Menu : MonoBehaviour
         {
             points = 0;
         }
-        
+
     }
     private void FixedUpdate()
     {
